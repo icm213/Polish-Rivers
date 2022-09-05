@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react"
 import { RiverNameInput } from './RiverNameInput'
 import { RiverResearchStations } from './RiverResearchStations'
+import { RiverButton } from './RiverButton'
 import './RiverData.css'
 
 export const RiverStats = () => {
 
     const [inputValue, setInputValue] = useState('')
-    const [riverName, setRiverName] = useState(null)
+    const [searchData, setSearchData] = useState(null)
     const [riverStations, setRiverStations] = useState([])
     
     const fetchRiverData = () => {
@@ -16,16 +17,34 @@ export const RiverStats = () => {
         .then(data => handleRiversData(data))
 
     const handleRiversData = (data) => {
-        console.log(riverName)
+        console.log(searchData)
         console.log(data)
         let stations = []
         data.forEach(dataObj =>{
-            if(dataObj.rzeka === riverName) {
+            if(dataObj.rzeka === searchData.split(' ').map(a=>a[0].toUpperCase() + a.slice(1,a.length).toLowerCase()).join(' ')
+            ||
+             dataObj.województwo === searchData.toLowerCase()) {
                 stations.push({
                     stacja: dataObj.stacja,
-                    województwo: dataObj.województwo
+                    województwo: dataObj.województwo,
+                    stan_wody: dataObj.stan_wody,
+                    stan_wody_data_pomiaru: dataObj.stan_wody_data_pomiaru,
+                    temperatura_wody:dataObj.temperatura_wody,
+                    temperatura_wody_data_pomiaru: dataObj.temperatura_wody_data_pomiaru
+
                 })
-                setRiverStations(stations)
+                setRiverStations(stations.sort((a,b)=>{
+                    let fa = a.stacja.toLowerCase(),
+                        fb = b.stacja.toLowerCase();
+                
+                    if (fa < fb) {
+                        return -1;
+                    }
+                    if (fa > fb) {
+                        return 1;
+                    }
+                    return 0;
+                }))
                 console.log(dataObj.stacja, riverStations)
             }
         })
@@ -37,20 +56,20 @@ export const RiverStats = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        setRiverName(inputValue)
+        setSearchData(inputValue)
     }
 
     // eslint-disable-next-line
-    useEffect(fetchRiverData, [riverName])
+    useEffect(fetchRiverData, [searchData])
     useEffect(()=>{console.log(riverStations)}, [riverStations])
 
     return (
         <div>
             <form className="river--stats__form">
                 <RiverNameInput onChange={handleInputValue} />
-                <button type="submit" onClick={handleSubmit}>Szukaj</button>
+                <RiverButton onClick={handleSubmit}/>
             </form>
-            <RiverResearchStations riverStations={riverStations} />
+            <RiverResearchStations riverStations={riverStations}/>
         </div>
     )
 }
