@@ -21,10 +21,11 @@ export const RiverStats = () => {
         console.log(data)
         let stations = []
         data.forEach(dataObj =>{
-            if(dataObj.rzeka === searchData.split(' ').map(a=>a[0].toUpperCase() + a.slice(1,a.length).toLowerCase()).join(' ')
+            if(dataObj.stacja === searchData.split(' ').map(a=>a[0].toUpperCase() + a.slice(1,a.length).toLowerCase()).join(' ')|| dataObj.rzeka === searchData.split(' ').map(a=>a[0].toUpperCase() + a.slice(1,a.length).toLowerCase()).join(' ')
             ||
              dataObj.województwo === searchData.toLowerCase()) {
                 stations.push({
+                    rzeka: dataObj.rzeka,
                     stacja: dataObj.stacja,
                     województwo: dataObj.województwo,
                     stan_wody: dataObj.stan_wody,
@@ -34,16 +35,10 @@ export const RiverStats = () => {
 
                 })
                 setRiverStations(stations.sort((a,b)=>{
-                    let fa = a.stacja.toLowerCase(),
-                        fb = b.stacja.toLowerCase();
+                    let fa = a.stacja.toLowerCase()
+                    let fb = b.stacja.toLowerCase()
                 
-                    if (fa < fb) {
-                        return -1;
-                    }
-                    if (fa > fb) {
-                        return 1;
-                    }
-                    return 0;
+                        return fa.localeCompare(fb)
                 }))
                 console.log(dataObj.stacja, riverStations)
             }

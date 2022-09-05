@@ -7,7 +7,7 @@ export const RiverResearchStations = ({riverStations}) => {
             {
                 riverStations.map(station=>{
                     return (
-                        <RiverDataAccordion key={station.stacja} station={station}/>
+                        <RiverDataAccordion key={station.rzeka+station.stacja} station={station}/>
                     )
                 })
             }
