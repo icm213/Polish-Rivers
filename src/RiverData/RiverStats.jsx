@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
-import { RiverNameInput } from './RiverNameInput'
 import { RiverResearchStations } from './RiverResearchStations'
-import { RiverButton } from './RiverButton'
+import { RiverSearchForm } from './RiverSearchForm'
 import './RiverData.css'
 
 export const RiverStats = () => {
@@ -16,12 +15,17 @@ export const RiverStats = () => {
         .then(result => result.json())
         .then(data => handleRiversData(data))
 
+    // const handleSearchData = data => {
+    //     data.split(' ').map(a=>a[0].toUpperCase() + a.slice(1,a.length).toLowerCase()).join(' ')
+    // }
+
     const handleRiversData = (data) => {
         console.log(searchData)
         console.log(data)
         let stations = []
         data.forEach(dataObj =>{
-            if(dataObj.stacja === searchData.split(' ').map(a=>a[0].toUpperCase() + a.slice(1,a.length).toLowerCase()).join(' ')|| dataObj.rzeka === searchData.split(' ').map(a=>a[0].toUpperCase() + a.slice(1,a.length).toLowerCase()).join(' ')
+            if(dataObj.stacja === searchData.split(' ').map(a=>a[0].toUpperCase() + a.slice(1,a.length).toLowerCase()).join(' ')
+            || dataObj.rzeka === searchData.split(' ').map(a=>a[0].toUpperCase() + a.slice(1,a.length).toLowerCase()).join(' ')
             ||
              dataObj.województwo === searchData.toLowerCase()) {
                 stations.push({
@@ -60,10 +64,7 @@ export const RiverStats = () => {
 
     return (
         <div>
-            <form className="river--stats__form">
-                <RiverNameInput onChange={handleInputValue} />
-                <RiverButton onClick={handleSubmit}/>
-            </form>
+            <RiverSearchForm onChange={handleInputValue} onClick={handleSubmit}/>
             <RiverResearchStations riverStations={riverStations}/>
         </div>
     )
